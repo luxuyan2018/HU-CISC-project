@@ -2,6 +2,10 @@
 
 ## client
 
+packages:
+
+1. ethers for interacting with Ethereum blockchain (can use ethers or web3)
+
 ## smart contract
 
 packages:
