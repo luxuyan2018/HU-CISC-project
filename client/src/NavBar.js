@@ -4,6 +4,8 @@ import Facebook from "./assets/social-media-icons/facebook_32x32.png";
 import Twitter from "./assets/social-media-icons/twitter_32x32.png";
 import Email from "./assets/social-media-icons/email_32x32.png";
 
+import { Link as ReactLink } from "react-router-dom";
+
 const NavBar = ({ accounts, setAccounts }) => {
   const isConnected = Boolean(accounts[0]);
 
@@ -34,9 +36,26 @@ const NavBar = ({ accounts, setAccounts }) => {
 
       {/* right side bar */}
       <Flex justify="space-around" align="center" width="40%" padding="30px">
-        <Box margin="0 15px">About</Box>
-        <Box margin="0 15px">Mint</Box>
-        <Box margin="0 15px">Team</Box>
+        <ReactLink
+          to="/"
+          style={{ textDecoration: "none", color: "white" }}
+          color="white"
+        >
+          Home
+        </ReactLink>
+        <ReactLink
+          to="/mint"
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          Mint
+        </ReactLink>
+        <ReactLink
+          to="/my-asset"
+          style={{ textDecoration: "none", color: "white" }}
+          color="white"
+        >
+          My Asset
+        </ReactLink>
 
         {/* Connect */}
         {isConnected ? (

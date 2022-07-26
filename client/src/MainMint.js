@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { ethers, BigNumber } from "ethers";
 
 import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 
-import Marketplace from "./contracts/Marketplace.json";
-import BoredPetsNFT from "./contracts/BoredPetsNFT.json";
+import { getContracts } from "./tools";
 
 const MainMint = ({ accounts, setAccounts }) => {
   const [mintAmount, setMintAmount] = useState(1);
@@ -12,17 +10,12 @@ const MainMint = ({ accounts, setAccounts }) => {
 
   async function handleMint() {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const networkId = await provider.getNetwork().chainId;
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        BoredPetsNFT.networks[networkId].address,
-        BoredPetsNFT.abi,
-        signer
-      );
+      const { marketplace, boredPets } = await getContracts();
+
       try {
-        const response = await contract.mint(BigNumber.from(mintAmount));
-        console.log("response: ", response);
+        let listingFee = await marketplace.getListingFee();
+        listingFee = listingFee.toString();
+        console.log("response: ", listingFee);
       } catch (error) {
         console.log("error: ", error);
       }
@@ -40,7 +33,8 @@ const MainMint = ({ accounts, setAccounts }) => {
   };
 
   return (
-    <Flex justify="center" align="center" height="100vh" paddingBottom="150px">
+    // <Flex justify="center" align="center" height="100vh" paddingBottom="150px">
+    <Flex align="center" justify="center" height="50vh">
       <Box width="520px">
         <div>
           <Text fontSize="48px" textShadow="0 5px #00000">
