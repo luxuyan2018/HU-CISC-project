@@ -1,9 +1,10 @@
 import "./App.css";
 import { useState } from "react";
-import MainMint from "./MainMint";
 import NavBar from "./NavBar";
-import MyAssets from "./my-nfts";
+import MainMint from "./pages/MainMint";
+import MyAssets from "./pages/MyAsset";
 import Home from "./pages/Home";
+import Market from "./pages/Market";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -16,6 +17,10 @@ function App() {
           <NavBar accounts={accounts} setAccounts={setAccounts} />
           <Routes>
             <Route exact path="/" element={<Home />} />
+            <Route
+              path="/market"
+              element={<Market accounts={accounts} setAccounts={setAccounts} />}
+            />
             <Route
               path="/mint"
               element={

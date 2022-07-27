@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 
-import { getContracts } from "./tools";
+import { getContracts } from "../tools";
 
 const MainMint = ({ accounts, setAccounts }) => {
   const [mintAmount, setMintAmount] = useState(1);

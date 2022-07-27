@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 // import axios from "axios";
+import { ethers } from "ethers";
 
-import { getContracts } from "./tools";
+import { getContracts } from "../tools";
+import { NavBarButton } from "../styling";
 
 export default function MyAssets({ accounts }) {
   const [nfts, setNfts] = useState([]);
@@ -56,7 +58,7 @@ export default function MyAssets({ accounts }) {
     return <h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>;
   } else {
     return (
-      <Flex align="center" justify="center">
+      <Flex justify="space-evenly" align="center" padding="30px">
         {nfts.map((nft, i) => (
           <div key={i} className="border shadow rounded-xl overflow-hidden">
             {/* <img src={nft.image} className="rounded" />
@@ -69,11 +71,12 @@ export default function MyAssets({ accounts }) {
               </div>
             </div> */}
             <div>
-              <Text>
-                {/* Price - {Web3.utils.fromWei(nft.price, "ether")} Eth */}
-                Price
+              <Text fontSize="30px" fontFamily="VT323" marginBottom="5px">
+                Price - {ethers.utils.formatEther(nft.price)} Eth
               </Text>
-              <Button onClick={() => listNFT(nft)}>List</Button>
+              <Button {...NavBarButton} onClick={() => listNFT(nft)}>
+                List
+              </Button>
             </div>
           </div>
         ))}
