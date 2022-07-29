@@ -17,9 +17,6 @@ export default function MyAssets({ accounts }) {
   async function loadNFTs() {
     const { marketplace, boredPets } = await getContracts();
 
-    let listingFee = await marketplace.getListingFee();
-    console.log("response: ", listingFee);
-
     const data = await marketplace.getMyNfts.call({ from: accounts[0] });
 
     console.log(data);

@@ -5,6 +5,7 @@ import MainMint from "./pages/MainMint";
 import MyAssets from "./pages/MyAsset";
 import Home from "./pages/Home";
 import Market from "./pages/Market";
+import CreateItem from "./pages/CreateNFT";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -24,7 +25,7 @@ function App() {
             <Route
               path="/mint"
               element={
-                <MainMint accounts={accounts} setAccounts={setAccounts} />
+                <CreateItem accounts={accounts} setAccounts={setAccounts} />
               }
             />
             <Route

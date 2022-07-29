@@ -6,6 +6,7 @@ packages:
 
 1. ethers for interacting with Ethereum blockchain (can use ethers or web3)
 2. react-router-dom for multi page route
+3. ipfs-http-client for store nft data
 
 ## smart contract
 
