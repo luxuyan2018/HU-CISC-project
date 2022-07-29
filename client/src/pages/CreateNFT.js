@@ -29,8 +29,9 @@ export default function CreateItem(accounts) {
 
   //   const router = useRouter();
   console.log("formInput: ", formInput);
+  console.log("fileUrl: ", fileUrl);
 
-  async function onChange(e) {
+  async function onDropFile(e) {
     // upload image to IPFS
     const file = e.target.files[0];
     try {
@@ -42,6 +43,11 @@ export default function CreateItem(accounts) {
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
+  }
+
+  function handleClearFile() {
+    // TODO: upload same file after clear not work
+    setFileUrl("");
   }
 
   async function uploadToIPFS() {
@@ -118,6 +124,7 @@ export default function CreateItem(accounts) {
             fontFamily="VT323"
             marginTop="0"
             marginBottom="10px"
+            letterSpacing="-2%"
           >
             File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3. Max size:
             100 MB
@@ -132,16 +139,42 @@ export default function CreateItem(accounts) {
                 borderStyle="dashed"
                 display="flex"
                 flexDirection="column"
-                rounded="md"
                 _hover={{
                   bg: "grey",
                 }}
                 borderWidth="6px"
               >
-                <Text fontWeight="bold" fontSize="15px">
-                  Drop images here
-                </Text>
-                <Text fontSize="10px">or click to upload</Text>
+                {fileUrl ? (
+                  <Box
+                    height="100%"
+                    width="100%"
+                    position="absolute"
+                    backgroundSize="cover"
+                    backgroundRepeat="no-repeat"
+                    backgroundPosition="center"
+                    backgroundImage={fileUrl}
+                  >
+                    <Button
+                      size="md"
+                      fontSize="40px"
+                      borderRadius="10px"
+                      top="0"
+                      right="0"
+                      position="absolute"
+                      zIndex={1}
+                      onClick={handleClearFile}
+                    >
+                      &#10007;
+                    </Button>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Text fontWeight="bold" fontSize="15px">
+                      Drop images here
+                    </Text>
+                    <Text fontSize="10px">or click to upload</Text>
+                  </Box>
+                )}
                 <Input
                   type="file"
                   height="100%"
@@ -152,6 +185,7 @@ export default function CreateItem(accounts) {
                   opacity="0"
                   aria-hidden="true"
                   accept=".csv"
+                  onChange={onDropFile}
                 />
               </Box>
             </AspectRatio>
