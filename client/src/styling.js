@@ -1,18 +1,20 @@
 export const NavBarButton = {
-  backgroundColor: "#D6517D",
+  backgroundColor: "pink.500",
   borderRadius: "10px",
-  boxShadow: "0px 2px 2px 1px #0F0F0F",
+  boxShadow: "3px 3px 3px 3px #0F0F0F",
   color: "white",
   cursor: "pointer",
   fontFamily: "inherit",
   padding: "10px",
   margin: "0 5px",
+  _disabled: { backgroundColor: "pink.100" },
+  _hover: { backgroundColor: "pink.100" },
 };
 
 export const ListButton = {
   backgroundColor: "blue",
   borderRadius: "10px",
-  boxShadow: "0px 2px 2px 1px #0F0F0F",
+  boxShadow: "3px 3px 3px 3px #0F0F0F",
   color: "white",
   cursor: "pointer",
   fontFamily: "inherit",

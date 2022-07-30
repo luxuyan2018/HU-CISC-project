@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
-import { getContracts } from "../tools";
 import {
   Box,
   Button,
   Flex,
   Input,
   Text,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  FormErrorMessage,
-  Heading,
-  Stack,
   Container,
   AspectRatio,
+  useToast,
+  useDisclosure,
+  ChakraProvider,
 } from "@chakra-ui/react";
+
+import { getContracts } from "../tools";
+import { NavBarButton } from "../styling";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -27,9 +26,9 @@ export default function CreateItem(accounts) {
     description: "",
   });
 
-  //   const router = useRouter();
-  console.log("formInput: ", formInput);
-  console.log("fileUrl: ", fileUrl);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  console.log("isOpen: ", isOpen);
 
   async function onDropFile(e) {
     // upload image to IPFS
@@ -50,11 +49,18 @@ export default function CreateItem(accounts) {
     setFileUrl("");
   }
 
-  async function uploadToIPFS() {
-    const { name, description, price } = formInput;
-    if (!name || !description || !price || !fileUrl) {
-      return;
-    } else {
+  function clearFormInput() {
+    // TODO: upload same file after clear not work
+    updateFormInput({
+      price: "",
+      name: "",
+      description: "",
+    });
+  }
+
+  async function uploadMetaDataToIPFS() {
+    const { name, description } = formInput;
+    if (canMint) {
       // first, upload metadata to IPFS
       const data = JSON.stringify({
         name,
@@ -72,42 +78,38 @@ export default function CreateItem(accounts) {
     }
   }
 
-  async function listNFTForSale() {
-    const url = await uploadToIPFS();
-    const { marketplace, boredPets } = await getContracts();
+  const toast = useToast();
+  async function mint() {
+    const url = await uploadMetaDataToIPFS();
+    console.log("meta data url: ", url);
 
-    let listingFee = await marketplace.getListingFee();
-    listingFee = listingFee.toString();
+    const { boredPets } = await getContracts();
 
-    console.log("listingFee: ", listingFee);
-
-    // boredPets.methods
-    //   .mint(url)
-    //   .send({ from: accounts[0] })
-    //   .on("receipt", function (receipt) {
-    //     console.log("minted");
-    //     // List the NFT
-    //     const tokenId = receipt.events.NFTMinted.returnValues[0];
-    //     marketplace.methods
-    //       .listNft(
-    //         boredPetsAddress,
-    //         tokenId,
-    //         Web3.utils.toWei(formInput.price, "ether")
-    //       )
-    //       .send({ from: accounts[0], value: listingFee })
-    //       .on("receipt", function () {
-    //         console.log("listed");
-    //         router.push("/");
-    //       });
-    //   });
+    let minted = await boredPets.mint(url);
+    console.log("minted", minted);
+    toast({
+      title: "NFT Minted",
+      description: "NFT minted, you can go to My Asset to check.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+      container: {
+        color: "pink.500",
+        rounded: "20px",
+      },
+    });
+    handleClearFile();
+    clearFormInput();
   }
 
   const hasName = !!formInput.name;
+  const canMint = !!formInput.name && fileUrl;
 
   return (
-    <Flex justify="space-evenly" align="center" padding="30px">
+    <Flex justify="space-evenly" align="center">
       <Box width="40%" align="left">
-        <Text fontWeight="bold" fontSize="30px" marginBottom="50px">
+        <Text fontWeight="bold" fontSize="30px" marginBottom="30px">
           Mint NFT
         </Text>
         <Box marginBottom="30px">
@@ -124,13 +126,12 @@ export default function CreateItem(accounts) {
             fontFamily="VT323"
             marginTop="0"
             marginBottom="10px"
-            letterSpacing="-2%"
           >
             File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3. Max size:
             100 MB
           </Text>
           <Container>
-            <AspectRatio ratio={3}>
+            <AspectRatio ratio={3.5}>
               <Box
                 position="relative"
                 height="100%"
@@ -142,7 +143,8 @@ export default function CreateItem(accounts) {
                 _hover={{
                   bg: "grey",
                 }}
-                borderWidth="6px"
+                borderWidth="3px"
+                rounded={30}
               >
                 {fileUrl ? (
                   <Box
@@ -156,11 +158,14 @@ export default function CreateItem(accounts) {
                   >
                     <Button
                       size="md"
-                      fontSize="40px"
+                      fontSize="30px"
                       borderRadius="10px"
-                      top="0"
-                      right="0"
+                      padding="10px"
+                      paddingBottom="20px"
+                      top="10px"
+                      right="10px"
                       position="absolute"
+                      backgroundColor="#D53F8C"
                       zIndex={1}
                       onClick={handleClearFile}
                     >
@@ -184,14 +189,21 @@ export default function CreateItem(accounts) {
                   left="0"
                   opacity="0"
                   aria-hidden="true"
-                  accept=".csv"
+                  accept="image/*"
                   onChange={onDropFile}
+                  // onClick and onDrop make select (drop) same file work
+                  onClick={(event) => {
+                    event.target.value = null;
+                  }}
+                  onDrop={(event) => {
+                    event.target.value = null;
+                  }}
                 />
               </Box>
             </AspectRatio>
           </Container>
         </Box>
-        <Box>
+        <Box marginBottom="30px">
           <Flex>
             <Text fontSize="15px" marginTop="0" marginBottom="10px">
               Asset Name
@@ -211,6 +223,7 @@ export default function CreateItem(accounts) {
             type="text"
             placeholder="Enter Name"
             borderColor={hasName ? "black" : "red"}
+            value={formInput.name}
             onChange={(e) =>
               updateFormInput({ ...formInput, name: e.target.value })
             }
@@ -225,6 +238,49 @@ export default function CreateItem(accounts) {
             </Text>
           )}
         </Box>
+        <Box marginBottom="30px">
+          <Text fontSize="15px" marginTop="0" marginBottom="10px">
+            Description
+          </Text>
+          <Input
+            marginTop="0"
+            marginBottom="10px"
+            fontFamily="inherit"
+            borderRadius="10px"
+            height="40px"
+            width="100%"
+            textAlign="left"
+            type="text"
+            placeholder="Enter Description"
+            value={formInput.description}
+            spellCheck
+            onChange={(e) =>
+              updateFormInput({ ...formInput, description: e.target.value })
+            }
+          />
+        </Box>
+        <Button {...NavBarButton} onClick={mint} disabled={!canMint}>
+          Mint
+        </Button>
+        <Button
+          {...NavBarButton}
+          onClick={() =>
+            toast({
+              title: "NFT Minted",
+              description: "NFT minted, you can go to My Asset to check.",
+              //   status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top",
+              container: {
+                color: "pink.500",
+                rounded: "20px",
+              },
+            })
+          }
+        >
+          Mint
+        </Button>
       </Box>
     </Flex>
   );

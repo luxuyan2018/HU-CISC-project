@@ -12,7 +12,9 @@
 }
 
 body {
-  overflow: hidden;
+  overflow: scroll;
+  overflow-y: scroll;
+  height: 100%;
 }
 
 .overlay {
