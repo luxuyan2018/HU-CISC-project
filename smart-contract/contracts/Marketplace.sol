@@ -20,6 +20,11 @@ contract Marketplace is ReentrancyGuard {
         uint256 price;
         bool listed;
     }
+    event NFTCreated(
+        address nftContract,
+        uint256 tokenId,
+        address owner
+    );
     event NFTListed(
         address nftContract,
         uint256 tokenId,
@@ -48,18 +53,14 @@ contract Marketplace is ReentrancyGuard {
         require(_price > 0, "Price must be at least 1 wei");
         require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
 
+        _nftsSold.decrement();
+
+        NFT storage nft = _idToNFT[_tokenId];
+
         IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
 
-        _nftCount.increment();
-
-        _idToNFT[_tokenId] = NFT(
-            _nftContract,
-            _tokenId,
-            payable(msg.sender),
-            payable(address(this)),
-            _price,
-            true
-        );
+        nft.price = _price;
+        nft.listed = true;
 
         emit NFTListed(
             _nftContract,
@@ -67,6 +68,30 @@ contract Marketplace is ReentrancyGuard {
             msg.sender,
             address(this),
             _price
+        );
+    }
+
+    // user create NFT
+    function createNft(
+        address _nftContract,
+        uint256 _tokenId
+    ) public payable nonReentrant {
+        _nftCount.increment();
+        _nftsSold.increment();
+
+        _idToNFT[_tokenId] = NFT(
+            _nftContract,
+            _tokenId,
+            payable(msg.sender),
+            payable(msg.sender),
+            0,
+            false
+        );
+
+        emit NFTCreated(
+            _nftContract,
+            _tokenId,
+            msg.sender
         );
     }
 
@@ -130,10 +155,12 @@ contract Marketplace is ReentrancyGuard {
 
         NFT[] memory nfts = new NFT[](unsoldNftsCount);
         uint256 nftsIndex = 0;
-        for (uint256 i = 0; i < nftCount; i++) {
-            if (_idToNFT[i + 1].listed) {
-                nfts[nftsIndex] = _idToNFT[i + 1];
-                nftsIndex++;
+        if (unsoldNftsCount > 0) {
+            for (uint256 i = 0; i < nftCount; i++) {
+                if (_idToNFT[i + 1].listed) {
+                    nfts[nftsIndex] = _idToNFT[i + 1];
+                    nftsIndex++;
+                }
             }
         }
         return nfts;

@@ -26,10 +26,6 @@ export default function CreateItem(accounts) {
     description: "",
   });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  console.log("isOpen: ", isOpen);
-
   async function onDropFile(e) {
     // upload image to IPFS
     const file = e.target.files[0];
@@ -43,6 +39,8 @@ export default function CreateItem(accounts) {
       console.log("Error uploading file: ", error);
     }
   }
+
+  console.log(fileUrl);
 
   function handleClearFile() {
     // TODO: upload same file after clear not work
@@ -81,17 +79,21 @@ export default function CreateItem(accounts) {
   const toast = useToast();
   async function mint() {
     const url = await uploadMetaDataToIPFS();
-    console.log("meta data url: ", url);
 
-    const { boredPets } = await getContracts();
+    const { marketplace, boredPets } = await getContracts();
 
-    let minted = await boredPets.mint(url);
-    console.log("minted", minted);
+    const txn = await boredPets.mint(url);
+    const rc = await txn.wait();
+    const NFTMinted = rc.events.find((event) => event.event === "NFTMinted");
+
+    const tokenId = NFTMinted.args[0].toNumber();
+    await marketplace.createNft(boredPets.address, tokenId);
+
     toast({
       title: "NFT Minted",
       description: "NFT minted, you can go to My Asset to check.",
       status: "success",
-      duration: 3000,
+      duration: 1000,
       isClosable: true,
       position: "top",
       container: {
@@ -260,25 +262,6 @@ export default function CreateItem(accounts) {
           />
         </Box>
         <Button {...NavBarButton} onClick={mint} disabled={!canMint}>
-          Mint
-        </Button>
-        <Button
-          {...NavBarButton}
-          onClick={() =>
-            toast({
-              title: "NFT Minted",
-              description: "NFT minted, you can go to My Asset to check.",
-              //   status: "success",
-              duration: 3000,
-              isClosable: true,
-              position: "top",
-              container: {
-                color: "pink.500",
-                rounded: "20px",
-              },
-            })
-          }
-        >
           Mint
         </Button>
       </Box>
