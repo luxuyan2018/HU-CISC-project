@@ -12,30 +12,47 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 function App() {
   const [accounts, setAccounts] = useState([]);
+  const isConnected = Boolean(accounts[0]);
   return (
     <div className="overlay">
       <div className="App">
         <ChakraProvider>
           <Router>
-            <NavBar accounts={accounts} setAccounts={setAccounts} />
+            <NavBar
+              isConnected={isConnected}
+              accounts={accounts}
+              setAccounts={setAccounts}
+            />
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route
                 path="/market"
                 element={
-                  <Market accounts={accounts} setAccounts={setAccounts} />
+                  <Market
+                    isConnected={isConnected}
+                    accounts={accounts}
+                    setAccounts={setAccounts}
+                  />
                 }
               />
               <Route
                 path="/mint"
                 element={
-                  <CreateItem accounts={accounts} setAccounts={setAccounts} />
+                  <CreateItem
+                    isConnected={isConnected}
+                    accounts={accounts}
+                    setAccounts={setAccounts}
+                  />
                 }
               />
               <Route
                 path="/my-asset"
                 element={
-                  <MyAssets accounts={accounts} setAccounts={setAccounts} />
+                  <MyAssets
+                    isConnected={isConnected}
+                    accounts={accounts}
+                    setAccounts={setAccounts}
+                  />
                 }
               />
             </Routes>

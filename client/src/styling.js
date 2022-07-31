@@ -21,3 +21,14 @@ export const ListButton = {
   padding: "10px",
   margin: "0 5px",
 };
+
+export const tooltip = {
+  backgroundColor: "pink.300",
+  borderRadius: "10px",
+  boxShadow: "3px 3px 3px 3px #0F0F0F",
+  color: "white",
+  padding: "10px",
+  margin: "0 5px",
+  hasArrow: true,
+  shouldWrapChildren: true,
+};

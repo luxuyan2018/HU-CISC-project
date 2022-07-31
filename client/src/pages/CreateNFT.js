@@ -9,16 +9,15 @@ import {
   Container,
   AspectRatio,
   useToast,
-  useDisclosure,
-  ChakraProvider,
+  Tooltip,
 } from "@chakra-ui/react";
 
 import { getContracts } from "../tools";
-import { NavBarButton } from "../styling";
+import { NavBarButton, tooltip } from "../styling";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-export default function CreateItem(accounts) {
+export default function CreateItem({ isConnected }) {
   const [fileUrl, setFileUrl] = useState(null);
   const [formInput, updateFormInput] = useState({
     price: "",
@@ -108,7 +107,11 @@ export default function CreateItem(accounts) {
   const hasName = !!formInput.name;
   const canMint = !!formInput.name && fileUrl;
 
-  return (
+  return !isConnected ? (
+    <Text fontSize="30px" fontFamily="VT323">
+      Connect to explore more.
+    </Text>
+  ) : (
     <Flex justify="space-evenly" align="center">
       <Box width="40%" align="left">
         <Text fontWeight="bold" fontSize="30px" marginBottom="30px">
@@ -261,9 +264,15 @@ export default function CreateItem(accounts) {
             }
           />
         </Box>
-        <Button {...NavBarButton} onClick={mint} disabled={!canMint}>
-          Mint
-        </Button>
+        <Tooltip
+          label={canMint ? undefined : "Fill in required fields to mint"}
+          placement="right"
+          {...tooltip}
+        >
+          <Button {...NavBarButton} onClick={mint} disabled={!canMint}>
+            Mint
+          </Button>
+        </Tooltip>
       </Box>
     </Flex>
   );
