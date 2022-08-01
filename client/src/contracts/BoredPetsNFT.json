@@ -15588,12 +15588,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x60F3056970E045196fe58BC45e33b01850d6Bb84",
-      "transactionHash": "0x05ea131fd4873ea22bea72d6aa65b2a7d728b4c4e80f99d79f6f21a8e2b37754"
+      "address": "0x71E9Cf88E9924181000172C00aAd1122b115a692",
+      "transactionHash": "0x5a49b1236e3b657f3fa1dded71f606c61a8a8635026aaa99507ee08786b1b534"
     }
   },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-07-31T04:37:31.850Z",
+  "updatedAt": "2022-08-01T04:56:33.192Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

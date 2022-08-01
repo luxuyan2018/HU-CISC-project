@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { create as ipfsHttpClient } from "ipfs-http-client";
+import { create } from "ipfs-http-client";
 import {
   Box,
   Button,
@@ -12,10 +12,25 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 
+import { Buffer } from "buffer";
+
 import { getContracts } from "../tools";
 import { NavBarButton, tooltip } from "../styling";
 
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
+const projectId = "2CjWjaYkeZ5zvwHEYDfVVWVW6Zx";
+const projectSecret = "ce5a56fb5fcf5a01002c05ad5c271a00";
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+const client = create({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
+});
+
+// const client = create("https://ipfs.infura.io:5001/api/v0");
 
 export default function CreateItem({ isConnected }) {
   const [fileUrl, setFileUrl] = useState(null);
@@ -29,17 +44,16 @@ export default function CreateItem({ isConnected }) {
     // upload image to IPFS
     const file = e.target.files[0];
     try {
-      const added = await client.add(file, {
-        progress: (prog) => console.log(`received: ${prog}`),
-      });
+      const added = await client.add(file);
+      const pinned = await client.pin.add(added.path);
+      console.log(added, pinned);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      console.log("url", url);
       setFileUrl(url);
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
   }
-
-  console.log(fileUrl);
 
   function handleClearFile() {
     // TODO: upload same file after clear not work

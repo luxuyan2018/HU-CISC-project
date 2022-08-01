@@ -57,10 +57,10 @@ contract Marketplace is ReentrancyGuard {
 
         NFT storage nft = _idToNFT[_tokenId];
 
-        IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
-
         nft.price = _price;
+        nft.seller = payable(msg.sender);
         nft.listed = true;
+
 
         emit NFTListed(
             _nftContract,
@@ -78,6 +78,8 @@ contract Marketplace is ReentrancyGuard {
     ) public payable nonReentrant {
         _nftCount.increment();
         _nftsSold.increment();
+
+        // IERC721(_nftContract).transferFrom(address(this), msg.sender, _tokenId);
 
         _idToNFT[_tokenId] = NFT(
             _nftContract,
@@ -108,8 +110,9 @@ contract Marketplace is ReentrancyGuard {
         );
 
         address payable buyer = payable(msg.sender);
+        
         payable(nft.seller).transfer(msg.value);
-        IERC721(_nftContract).transferFrom(address(this), buyer, nft.tokenId);
+        IERC721(_nftContract).transferFrom(payable(nft.seller), buyer, nft.tokenId);
         _marketOwner.transfer(LISTING_FEE);
         nft.owner = buyer;
         nft.listed = false;

@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Flex, Text, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  Image,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  Tooltip,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { ethers } from "ethers";
 
 import { getContracts } from "../tools";
-import { NavBarButton } from "../styling";
+import { NavBarButton, tooltip } from "../styling";
 
 export default function MyAssets({ isConnected }) {
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [nftPrice, setNftPrice] = useState({});
 
   useEffect(() => {
     loadNFTs();
@@ -50,17 +61,25 @@ export default function MyAssets({ isConnected }) {
   }
 
   async function listNFT(tokenId, price) {
+    console.log(tokenId, price);
     const { marketplace, boredPets } = await getContracts();
     let listingFee = await marketplace.getListingFee();
     listingFee = listingFee.toString();
     console.log("listing fee", listingFee);
-    await marketplace.listNft(boredPets.address, tokenId, price, {
-      value: listingFee,
-    });
+    console.log("wei", ethers.utils.parseEther(price).toString(10));
+    await marketplace.listNft(
+      boredPets.address,
+      tokenId,
+      ethers.utils.parseEther(price),
+      {
+        value: listingFee,
+      }
+    );
     await loadNFTs();
   }
 
   console.log("nfts", nfts);
+  console.log("nfp price", nftPrice);
 
   if (loadingState === "loaded" && !nfts.length) {
     return <h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>;
@@ -82,13 +101,13 @@ export default function MyAssets({ isConnected }) {
           flexWrap="wrap"
         >
           {nfts.map((nft, i) => (
-            <Box marginBottom="30px" width="30%">
+            <Box marginBottom="30px" width="30%" align="center">
               <Image src={nft.image} boxSize="lg" fit="none" />
               <Text fontSize="30px" fontFamily="VT323">
                 Name: {nft.name}
               </Text>
               <Text fontSize="30px" fontFamily="VT323">
-                Description: {nft.description ? nft.name : "N/A"}
+                Description: {nft.description ? nft.description : "N/A"}
               </Text>
               <Box>
                 {nft.listed ? (
@@ -96,12 +115,40 @@ export default function MyAssets({ isConnected }) {
                     Price - {ethers.utils.formatEther(nft.price)} Eth
                   </Text>
                 ) : (
-                  <Button
-                    {...NavBarButton}
-                    onClick={() => listNFT(nft.tokenId, 1000000000000000)}
-                  >
-                    List
-                  </Button>
+                  <InputGroup width="80%">
+                    <InputLeftAddon backgroundColor="pink.500" children="Eth" />
+                    <Input
+                      fontFamily="inherit"
+                      borderRadius="10px"
+                      textAlign="left"
+                      type="number"
+                      placeholder="Enter Price"
+                      width="60%"
+                      value={nftPrice[nft.tokenId]}
+                      onChange={(e) => {
+                        setNftPrice({ [nft.tokenId]: e.target.value });
+                      }}
+                    />
+                    <Tooltip
+                      label={
+                        nftPrice[nft.tokenId]
+                          ? undefined
+                          : "Fill in required fields to mint"
+                      }
+                      placement="bottom"
+                      {...tooltip}
+                    >
+                      <Button
+                        {...NavBarButton}
+                        onClick={() =>
+                          listNFT(nft.tokenId, nftPrice[nft.tokenId])
+                        }
+                        disabled={!nftPrice[nft.tokenId]}
+                      >
+                        List
+                      </Button>
+                    </Tooltip>
+                  </InputGroup>
                 )}
               </Box>
             </Box>
