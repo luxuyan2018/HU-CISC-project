@@ -59,7 +59,7 @@ export default function Market({ isConnected, accounts }) {
   }
 
   if (loadingState === "loaded" && !nfts.length) {
-    return <h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>;
+    return <h1 className="py-10 px-20 text-3xl">No NFTs listed on market</h1>;
   } else {
     return !isConnected ? (
       <Text fontSize="30px" fontFamily="VT323">
@@ -79,7 +79,7 @@ export default function Market({ isConnected, accounts }) {
         >
           {nfts.map((nft, i) => (
             <Box marginBottom="30px" width="30%">
-              <Image src={nft.image} boxSize="lg" fit="none" />
+              <Image src={nft.image} boxSize="md" fit="none" />
               <Text fontSize="30px" fontFamily="VT323">
                 Name: {nft.name}
               </Text>

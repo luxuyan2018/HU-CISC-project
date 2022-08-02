@@ -121,33 +121,6 @@ contract Marketplace is ReentrancyGuard {
         emit NFTSold(_nftContract, nft.tokenId, nft.seller, buyer, msg.value);
     }
 
-    // Resell an NFT purchased from the marketplace
-    function resellNft(
-        address _nftContract,
-        uint256 _tokenId,
-        uint256 _price
-    ) public payable nonReentrant {
-        require(_price > 0, "Price must be at least 1 wei");
-        require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
-
-        IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
-
-        NFT storage nft = _idToNFT[_tokenId];
-        nft.seller = payable(msg.sender);
-        nft.owner = payable(address(this));
-        nft.listed = true;
-        nft.price = _price;
-
-        _nftsSold.decrement();
-        emit NFTListed(
-            _nftContract,
-            _tokenId,
-            msg.sender,
-            address(this),
-            _price
-        );
-    }
-
     function getListingFee() public view returns (uint256) {
         return LISTING_FEE;
     }
