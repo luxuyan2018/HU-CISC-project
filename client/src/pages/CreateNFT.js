@@ -46,9 +46,7 @@ export default function CreateItem({ isConnected }) {
     try {
       const added = await client.add(file);
       const pinned = await client.pin.add(added.path);
-      console.log(added, pinned);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      console.log("url", url);
       setFileUrl(url);
     } catch (error) {
       console.log("Error uploading file: ", error);
@@ -56,12 +54,10 @@ export default function CreateItem({ isConnected }) {
   }
 
   function handleClearFile() {
-    // TODO: upload same file after clear not work
     setFileUrl("");
   }
 
   function clearFormInput() {
-    // TODO: upload same file after clear not work
     updateFormInput({
       price: "",
       name: "",
@@ -98,9 +94,13 @@ export default function CreateItem({ isConnected }) {
     const txn = await boredPets.mint(url);
     const rc = await txn.wait();
     const NFTMinted = rc.events.find((event) => event.event === "NFTMinted");
+    console.log("NFTMinted", NFTMinted);
 
     const tokenId = NFTMinted.args[0].toNumber();
-    await marketplace.createNft(boredPets.address, tokenId);
+    const txn2 = await marketplace.createNft(boredPets.address, tokenId);
+    const rc2 = await txn2.wait();
+    const NFTCreated = rc2.events.find((event) => event.event === "NFTCreated");
+    console.log("NFTCreated", NFTCreated);
 
     toast({
       title: "NFT Minted",

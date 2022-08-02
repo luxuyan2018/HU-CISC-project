@@ -61,13 +61,12 @@ export default function MyAssets({ isConnected }) {
   }
 
   async function listNFT(tokenId, price) {
-    console.log(tokenId, price);
     const { marketplace, boredPets } = await getContracts();
     let listingFee = await marketplace.getListingFee();
     listingFee = listingFee.toString();
     console.log("listing fee", listingFee);
-    console.log("wei", ethers.utils.parseEther(price).toString(10));
-    await marketplace.listNft(
+
+    const txn = await marketplace.listNft(
       boredPets.address,
       tokenId,
       ethers.utils.parseEther(price),
@@ -75,11 +74,12 @@ export default function MyAssets({ isConnected }) {
         value: listingFee,
       }
     );
+    const rc = await txn.wait();
+    const NFTListed = rc.events.find((event) => event.event === "NFTListed");
+    console.log("NFTListed", NFTListed);
+
     await loadNFTs();
   }
-
-  console.log("nfts", nfts);
-  console.log("nfp price", nftPrice);
 
   if (loadingState === "loaded" && !nfts.length) {
     return <h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>;

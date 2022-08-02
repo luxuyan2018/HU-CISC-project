@@ -5,7 +5,7 @@ export const NavBarButton = {
   color: "white",
   cursor: "pointer",
   fontFamily: "inherit",
-  padding: "10px",
+  padding: "5px",
   margin: "0 5px",
   _disabled: { backgroundColor: "pink.100" },
   _hover: { backgroundColor: "pink.100" },
@@ -23,7 +23,7 @@ export const ListButton = {
 };
 
 export const tooltip = {
-  backgroundColor: "pink.300",
+  backgroundColor: "purple.600",
   borderRadius: "10px",
   boxShadow: "3px 3px 3px 3px #0F0F0F",
   color: "white",

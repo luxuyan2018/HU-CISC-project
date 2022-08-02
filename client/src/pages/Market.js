@@ -19,8 +19,6 @@ export default function Market({ isConnected, accounts }) {
 
     const data = await marketplace.getListedNfts.call();
 
-    console.log("data", data);
-
     const nfts = await Promise.all(
       data.map(async (i) => {
         try {
@@ -50,14 +48,15 @@ export default function Market({ isConnected, accounts }) {
 
   async function buyNFT(tokenId, price) {
     const { marketplace, boredPets } = await getContracts();
-    await marketplace.buyNft(boredPets.address, tokenId, {
+    const txn = await marketplace.buyNft(boredPets.address, tokenId, {
       value: price,
     });
-    console.log("bought");
+    const rc = await txn.wait();
+    const NFTSold = rc.events.find((event) => event.event === "NFTSold");
+    console.log("NFTSold", NFTSold);
+
     await loadNFTs();
   }
-
-  console.log("nfts", nfts, accounts);
 
   if (loadingState === "loaded" && !nfts.length) {
     return <h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>;

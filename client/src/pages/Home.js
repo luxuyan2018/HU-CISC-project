@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
 function Home() {
   return (
@@ -7,7 +7,7 @@ function Home() {
       <Box width="800px">
         <Text fontSize="40px">NFT Marketplace</Text>
         <Text fontSize="30px" fontFamily="VT323">
-          Connect to explore more.
+          Connect your MetaMast wallet to explore more.
         </Text>
       </Box>
     </Flex>
