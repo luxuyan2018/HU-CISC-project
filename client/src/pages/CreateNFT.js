@@ -45,8 +45,8 @@ export default function CreateItem({ isConnected }) {
     const file = e.target.files[0];
     try {
       const added = await client.add(file);
-      const pinned = await client.pin.add(added.path);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      await client.pin.add(added.path);
+      const url = `https://hu-project.infura-ipfs.io/ipfs/${added.path}`;
       setFileUrl(url);
     } catch (error) {
       console.log("Error uploading file: ", error);
@@ -76,7 +76,8 @@ export default function CreateItem({ isConnected }) {
       });
       try {
         const added = await client.add(data);
-        const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+        await client.pin.add(added.path);
+        const url = `https://hu-project.infura-ipfs.io/ipfs/${added.path}`;
         // after metadata is uploaded to IPFS, return the URL to use it in the transaction
         return url;
       } catch (error) {
@@ -86,6 +87,7 @@ export default function CreateItem({ isConnected }) {
   }
 
   const toast = useToast();
+
   async function mint() {
     const url = await uploadMetaDataToIPFS();
 
