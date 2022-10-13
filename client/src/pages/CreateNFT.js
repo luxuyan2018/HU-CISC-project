@@ -33,7 +33,7 @@ const client = create({
 // const client = create("https://ipfs.infura.io:5001/api/v0");
 
 export default function CreateItem({ isConnected }) {
-  const [fileUrl, setFileUrl] = useState(null);
+  const [file, setFile] = useState(null); // this fileUrl is local url instead of ipfs url
   const [formInput, updateFormInput] = useState({
     price: "",
     name: "",
@@ -41,20 +41,14 @@ export default function CreateItem({ isConnected }) {
   });
 
   async function onDropFile(e) {
-    // upload image to IPFS
-    const file = e.target.files[0];
-    try {
-      const added = await client.add(file);
-      await client.pin.add(added.path);
-      const url = `https://hu-project.infura-ipfs.io/ipfs/${added.path}`;
-      setFileUrl(url);
-    } catch (error) {
-      console.log("Error uploading file: ", error);
-    }
+    const newFile = e.target.files[0];
+    const fileLocalUrl = URL.createObjectURL(newFile);
+    newFile.src = fileLocalUrl;
+    setFile(newFile);
   }
 
   function handleClearFile() {
-    setFileUrl("");
+    setFile("");
   }
 
   function clearFormInput() {
@@ -68,11 +62,22 @@ export default function CreateItem({ isConnected }) {
   async function uploadMetaDataToIPFS() {
     const { name, description } = formInput;
     if (canMint) {
-      // first, upload metadata to IPFS
+      // upload file to IPFS
+      // upload same file will have the path of the first upload instead of generate new path
+      let uploadedUrl;
+      try {
+        const added = await client.add(file);
+        await client.pin.add(added.path);
+        uploadedUrl = `https://hu-project.infura-ipfs.io/ipfs/${added.path}`;
+      } catch (error) {
+        console.log("Error uploading file: ", error);
+      }
+
+      // upload metadata to IPFS
       const data = JSON.stringify({
         name,
         description,
-        image: fileUrl,
+        image: uploadedUrl,
       });
       try {
         const added = await client.add(data);
@@ -121,7 +126,7 @@ export default function CreateItem({ isConnected }) {
   }
 
   const hasName = !!formInput.name;
-  const canMint = !!formInput.name && fileUrl;
+  const canMint = !!formInput.name && file;
 
   return !isConnected ? (
     <Text fontSize="30px" fontFamily="VT323">
@@ -167,7 +172,7 @@ export default function CreateItem({ isConnected }) {
                 borderWidth="3px"
                 rounded={30}
               >
-                {fileUrl ? (
+                {file ? (
                   <Box
                     height="100%"
                     width="100%"
@@ -175,7 +180,7 @@ export default function CreateItem({ isConnected }) {
                     backgroundSize="cover"
                     backgroundRepeat="no-repeat"
                     backgroundPosition="center"
-                    backgroundImage={fileUrl}
+                    backgroundImage={file.src}
                   >
                     <Button
                       size="md"
