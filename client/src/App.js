@@ -23,39 +23,41 @@ function App() {
               accounts={accounts}
               setAccounts={setAccounts}
             />
-            <Routes>
-              <Route exact path="/" element={<Home />} />
-              <Route
-                path="/market"
-                element={
-                  <Market
-                    isConnected={isConnected}
-                    accounts={accounts}
-                    setAccounts={setAccounts}
-                  />
-                }
-              />
-              <Route
-                path="/mint"
-                element={
-                  <CreateItem
-                    isConnected={isConnected}
-                    accounts={accounts}
-                    setAccounts={setAccounts}
-                  />
-                }
-              />
-              <Route
-                path="/my-asset"
-                element={
-                  <MyAssets
-                    isConnected={isConnected}
-                    accounts={accounts}
-                    setAccounts={setAccounts}
-                  />
-                }
-              />
-            </Routes>
+            <div className="content">
+              <Routes>
+                <Route exact path="/" element={<Home />} />
+                <Route
+                  path="/market"
+                  element={
+                    <Market
+                      isConnected={isConnected}
+                      accounts={accounts}
+                      setAccounts={setAccounts}
+                    />
+                  }
+                />
+                <Route
+                  path="/mint"
+                  element={
+                    <CreateItem
+                      isConnected={isConnected}
+                      accounts={accounts}
+                      setAccounts={setAccounts}
+                    />
+                  }
+                />
+                <Route
+                  path="/my-asset"
+                  element={
+                    <MyAssets
+                      isConnected={isConnected}
+                      accounts={accounts}
+                      setAccounts={setAccounts}
+                    />
+                  }
+                />
+              </Routes>
+            </div>
           </Router>
         </ChakraProvider>
       </div>

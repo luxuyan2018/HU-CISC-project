@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Link as ReactLink } from "react-router-dom";
 import { Box, Button, Flex, Image, Link, Tooltip } from "@chakra-ui/react";
 
@@ -10,6 +11,8 @@ import { NavBarButton, tooltip } from "./styling";
 const NOT_CONNECT_TOOLTIP = "Connect to explore";
 
 const NavBar = ({ isConnected, accounts, setAccounts }) => {
+  const [transparent, setTransparent] = useState(true);
+
   async function connectAccount() {
     if (window.ethereum) {
       // metamask will inject to here
@@ -20,8 +23,22 @@ const NavBar = ({ isConnected, accounts, setAccounts }) => {
     }
   }
 
+  function scrollTrigger() {
+    if (window.scrollY >= 20) {
+      setTransparent(false);
+    } else {
+      setTransparent(true);
+    }
+  }
+
+  window.addEventListener("scroll", scrollTrigger);
+
   return (
-    <Flex justify="space-between" align="center" padding="30px">
+    <Flex
+      justify="space-between"
+      align="center"
+      className={transparent ? "nav-transparent" : "nav-scrolled"}
+    >
       {/* left side bar */}
       <Flex justify="space-around" width="25%" padding="0 75px">
         <Link href="https://www.facebook.com">

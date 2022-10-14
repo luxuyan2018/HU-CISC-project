@@ -38,3 +38,23 @@ body {
   background-position: center;
   background-image: url(./assets/background/parallax-bg.gif);
 }
+
+.nav-scrolled {
+  z-index: 20;
+  width: 100%;
+  position: fixed;
+  background-position: center;
+  background-image: url(./assets/background/nav.png);
+}
+
+.nav-transparent {
+  z-index: 20;
+  width: 100%;
+  position: fixed;
+  background-color: rgb(256, 256, 256, 0);
+}
+
+.content {
+  top: 100px;
+  padding-top: 120px;
+}
