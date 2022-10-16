@@ -62,7 +62,7 @@ export default function Sidebar({
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent fontFamily="VT323" mt="100px" backgroundColor="pink.800">
+        <DrawerContent fontFamily="VT323" mt="100px" backgroundColor="black">
           <DrawerCloseButton color="white" />
           <DrawerHeader color="white" fontSize="30px">
             <Flex>
@@ -80,13 +80,13 @@ export default function Sidebar({
           <DrawerBody mt="10%">
             {/* Connect */}
             <Flex mb="15px">
-              <Flex flexDirection="row" flexWrap="wrap">
-                <Image src={MetaMask} w="68%" />
+              <Flex>
+                <Image src={MetaMask} w="200px" />
                 <Button
                   {...NavBarButton}
                   onClick={isConnected ? disConnectAccount : connectAccount}
-                  w="20%"
-                  ml="10%"
+                  w="50px"
+                  ml="15px"
                 >
                   {isConnected ? "Log Out" : "Connect"}
                 </Button>
@@ -94,10 +94,10 @@ export default function Sidebar({
             </Flex>
             {isConnected && (
               <Flex>
-                <Text color="white" fontSize="23px" width="70%" mt="5px">
+                <Text color="white" fontSize="25px" width="200px" mt="5px">
                   Acc #: {account.slice(0, 6)}...{account.slice(-4)}
                 </Text>
-                <Button {...NavBarButton} onClick={onCopy} w="20%" ml="10%">
+                <Button {...NavBarButton} onClick={onCopy} w="50px" ml="15px">
                   {hasCopied ? "Copied" : "Copy"}
                 </Button>
               </Flex>
