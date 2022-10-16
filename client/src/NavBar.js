@@ -104,6 +104,7 @@ const NavBar = ({ isConnected, accounts, setAccounts }) => {
         <Sidebar
           NavBarButton={{ ...NavBarButton }}
           isConnected={isConnected}
+          account={accounts[0]}
           connectAccount={connectAccount}
           disConnectAccount={disConnectAccount}
           setTransparent={setTransparent}
