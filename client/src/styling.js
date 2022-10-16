@@ -7,6 +7,7 @@ export const NavBarButton = {
   fontFamily: "inherit",
   padding: "5px",
   margin: "0 5px",
+  width: "100px",
   _disabled: { backgroundColor: "pink.100" },
   _hover: { backgroundColor: "pink.100" },
 };

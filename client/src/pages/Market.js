@@ -79,7 +79,7 @@ export default function Market({ isConnected, accounts }) {
         >
           {nfts.map((nft, i) => (
             <Box marginBottom="30px" width="30%" align="center">
-              <Image src={nft.image} boxSize="md" fit="none" />
+              <Image src={nft.image} boxSize="400px" />
               <Text fontSize="30px" fontFamily="VT323">
                 Name: {nft.name}
               </Text>

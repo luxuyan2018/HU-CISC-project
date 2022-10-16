@@ -1,12 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import { Link as ReactLink } from "react-router-dom";
-import { Box, Button, Flex, Image, Link, Tooltip } from "@chakra-ui/react";
+import { Button, Flex, Image, Link, Tooltip } from "@chakra-ui/react";
 
 import Facebook from "./assets/social-media-icons/facebook_32x32.png";
 import Twitter from "./assets/social-media-icons/twitter_32x32.png";
 import Email from "./assets/social-media-icons/email_32x32.png";
 import { NavBarButton, tooltip } from "./styling";
+
+import Sidebar from "./SideBar";
 
 const NOT_CONNECT_TOOLTIP = "Connect to explore";
 
@@ -21,6 +23,10 @@ const NavBar = ({ isConnected, accounts, setAccounts }) => {
       });
       setAccounts(accounts);
     }
+  }
+
+  async function disConnectAccount() {
+    await setAccounts([]);
   }
 
   function scrollTrigger() {
@@ -38,6 +44,7 @@ const NavBar = ({ isConnected, accounts, setAccounts }) => {
       justify="space-between"
       align="center"
       className={transparent ? "nav-transparent" : "nav-scrolled"}
+      h="100px"
     >
       {/* left side bar */}
       <Flex justify="space-around" width="25%" padding="0 75px">
@@ -89,19 +96,19 @@ const NavBar = ({ isConnected, accounts, setAccounts }) => {
             {...tooltip}
           >
             <Button {...NavBarButton} isDisabled={!isConnected}>
-              My Asset
+              Mine
             </Button>
           </Tooltip>
         </ReactLink>
 
-        {/* Connect */}
-        {isConnected ? (
-          <Box margin="0 15px">Connected</Box>
-        ) : (
-          <Button {...NavBarButton} onClick={connectAccount}>
-            Connect
-          </Button>
-        )}
+        <Sidebar
+          NavBarButton={{ ...NavBarButton }}
+          isConnected={isConnected}
+          connectAccount={connectAccount}
+          disConnectAccount={disConnectAccount}
+          setTransparent={setTransparent}
+          scrollTrigger={scrollTrigger}
+        />
       </Flex>
     </Flex>
   );
