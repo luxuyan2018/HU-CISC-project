@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
 import Marketplace from "./contracts/Marketplace.json";
-import BoredPetsNFT from "./contracts/BoredPetsNFT.json";
+import HappyCatsNFT from "./contracts/HappyCatsNFT.json";
 
 export const getContracts = async () => {
   if (window.ethereum) {
@@ -18,8 +18,8 @@ export const getContracts = async () => {
     );
 
     const boredPets = await new ethers.Contract(
-      BoredPetsNFT.networks[networkId].address,
-      BoredPetsNFT.abi,
+      HappyCatsNFT.networks[networkId].address,
+      HappyCatsNFT.abi,
       signer
     );
     return { marketplace, boredPets };

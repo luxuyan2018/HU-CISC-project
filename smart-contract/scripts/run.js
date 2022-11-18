@@ -1,4 +1,4 @@
-var BoredPetsNFT = artifacts.require("BoredPetsNFT");
+var HappyCatsNFT = artifacts.require("HappyCatsNFT");
 var Marketplace = artifacts.require("Marketplace");
 
 async function logNftLists(marketplace) {
@@ -15,7 +15,7 @@ async function logNftLists(marketplace) {
 
 const main = async (cb) => {
   try {
-    const boredPets = await BoredPetsNFT.deployed();
+    const boredPets = await HappyCatsNFT.deployed();
     const marketplace = await Marketplace.deployed();
 
     console.log("MINT AND LIST 3 NFTs");

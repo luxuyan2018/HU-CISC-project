@@ -49634,7 +49634,7 @@
 │   ├── build
 │   │   └── contracts
 │   │       ├── Address.json
-│   │       ├── BoredPetsNFT.json
+│   │       ├── HappyCatsNFT.json
 │   │       ├── Context.json
 │   │       ├── Counters.json
 │   │       ├── ERC165.json
@@ -49649,7 +49649,7 @@
 │   │       ├── ReentrancyGuard.json
 │   │       └── Strings.json
 │   ├── contracts
-│   │   ├── BoredPetsNFT.sol
+│   │   ├── HappyCatsNFT.sol
 │   │   ├── Marketplace.sol
 │   │   └── Migrations.sol
 │   ├── migrations
