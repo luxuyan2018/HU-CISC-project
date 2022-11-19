@@ -2,7 +2,9 @@
 
 ![image](https://user-images.githubusercontent.com/39712325/202875014-8aea8799-0b3c-4485-bc00-49a4b0e730bc.png)
 
-app route: https://nft-marketplace-9b2bd.firebaseapp.com/
+App route: https://nft-marketplace-9b2bd.firebaseapp.com/
+
+Smart contract deployed to goerli testnet: https://goerli.net/, download MetaMask and get some GoerliETH (from Goerli PoW Faucet https://goerli-faucet.pk910.de/) to interact with the app.
 
 ## client
 
@@ -12,6 +14,13 @@ packages:
 2. react-router-dom for multi page route
 3. ipfs-http-client for store nft data
 4. axios for putting request
+
+To deploy new version:
+
+1. build using `npm run build`
+2. deploy to firebase using `firebase deploy`
+
+To run app locally: `npm run start`
 
 ## smart contract
 

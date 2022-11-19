@@ -84,7 +84,7 @@ export default function Market({ isConnected, accounts }) {
                 Name: {nft.name}
               </Text>
               <Text fontSize="30px" fontFamily="VT323">
-                Description: {nft.description ? nft.name : "N/A"}
+                Description: {nft.description ? nft.description : "N/A"}
               </Text>
               <Box>
                 <Text fontSize="30px" fontFamily="VT323">

@@ -1,7 +1,5 @@
 import { ethers } from "ethers";
-
-import Marketplace from "./contracts/Marketplace.json";
-import HappyCatsNFT from "./contracts/HappyCatsNFT.json";
+import { Marketplace, HappyCatsNFT } from "./ContractsAddress";
 
 export const getContracts = async () => {
   if (window.ethereum) {
@@ -10,6 +8,8 @@ export const getContracts = async () => {
     });
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
+
+    console.log(Marketplace, HappyCatsNFT, networkId);
 
     const marketplace = await new ethers.Contract(
       Marketplace.networks[networkId].address,
