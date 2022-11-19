@@ -20,9 +20,14 @@ module.exports = {
       from: "0x1e4BA1401de4D74f7D4F6e383E848baa881B5277",
     },
   },
-  etherscan: {
-    apiKey: process.env.APP_ETHERSCAN_API_KEY,
+
+  // verify smart contract source code
+  plugins: ["truffle-plugin-verify"],
+  api_keys: {
+    etherscan: process.env.APP_ETHERSCAN_API_KEY,
+    sourcify: process.env.APP_ETHERSCAN_API_KEY,
   },
+
   // Configure your compilers
   compilers: {
     solc: {
