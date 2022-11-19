@@ -1,5 +1,7 @@
 # NFT Marketplace Project
 
+![image](https://user-images.githubusercontent.com/39712325/202875014-8aea8799-0b3c-4485-bc00-49a4b0e730bc.png)
+
 app route: https://nft-marketplace-9b2bd.firebaseapp.com/
 
 ## client
