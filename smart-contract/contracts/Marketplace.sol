@@ -79,8 +79,6 @@ contract Marketplace is ReentrancyGuard {
         _nftCount.increment();
         _nftsSold.increment();
 
-        // IERC721(_nftContract).transferFrom(address(this), msg.sender, _tokenId);
-
         _idToNFT[_tokenId] = NFT(
             _nftContract,
             _tokenId,
