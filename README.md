@@ -1,6 +1,6 @@
 # NFT Marketplace Project
 
-app route: nft-marketplace-9b2bd.firebaseapp.com
+app route: https://nft-marketplace-9b2bd.firebaseapp.com/
 
 ## client
 
