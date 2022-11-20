@@ -9,17 +9,21 @@ import {
   InputGroup,
   InputLeftAddon,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ethers } from "ethers";
 
-import { getContracts } from "../tools";
+import { getContracts, REJECT_TXN_TEXT } from "../tools";
 import { NavBarButton, tooltip } from "../styling";
 
 export default function MyAssets({ isConnected }) {
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [nftPrice, setNftPrice] = useState({});
+  const [isListing, setIsListing] = useState(false);
+
+  const toast = useToast();
 
   useEffect(() => {
     loadNFTs();
@@ -61,24 +65,56 @@ export default function MyAssets({ isConnected }) {
   }
 
   async function listNFT(tokenId, price) {
+    setIsListing(true);
     const { marketplace, boredPets } = await getContracts();
     let listingFee = await marketplace.getListingFee();
     listingFee = listingFee.toString();
     console.log("listing fee", listingFee);
 
-    const txn = await marketplace.listNft(
-      boredPets.address,
-      tokenId,
-      ethers.utils.parseEther(price),
-      {
-        value: listingFee,
-      }
-    );
-    const rc = await txn.wait();
-    const NFTListed = rc.events.find((event) => event.event === "NFTListed");
-    console.log("NFTListed", NFTListed);
+    try {
+      const txn = await marketplace.listNft(
+        boredPets.address,
+        tokenId,
+        ethers.utils.parseEther(price),
+        {
+          value: listingFee,
+        }
+      );
+      const rc = await txn.wait();
+      const NFTListed = rc.events.find((event) => event.event === "NFTListed");
+      console.log("NFTListed", NFTListed);
 
-    await loadNFTs();
+      await loadNFTs();
+
+      toast({
+        title: "NFT Listed",
+        description: "You can go to Market Page to check.",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        container: {
+          color: "pink.500",
+          rounded: "20px",
+        },
+      });
+    } catch (e) {
+      console.log(e);
+
+      toast({
+        title: "Failed to List NFT",
+        description: REJECT_TXN_TEXT,
+        status: "error",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        container: {
+          color: "pink.500",
+          rounded: "20px",
+        },
+      });
+    }
+    setIsListing(false);
   }
 
   if (loadingState === "loaded" && !nfts.length) {
@@ -143,7 +179,7 @@ export default function MyAssets({ isConnected }) {
                         onClick={() =>
                           listNFT(nft.tokenId, nftPrice[nft.tokenId])
                         }
-                        disabled={!nftPrice[nft.tokenId]}
+                        disabled={!nftPrice[nft.tokenId] || isListing}
                       >
                         List
                       </Button>

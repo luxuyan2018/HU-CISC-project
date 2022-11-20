@@ -14,7 +14,7 @@ import {
 
 import { Buffer } from "buffer";
 
-import { getContracts } from "../tools";
+import { getContracts, REJECT_TXN_TEXT } from "../tools";
 import { NavBarButton, tooltip } from "../styling";
 
 const projectId = "2CjWjaYkeZ5zvwHEYDfVVWVW6Zx";
@@ -34,6 +34,7 @@ const client = create({
 
 export default function CreateItem({ isConnected }) {
   const [file, setFile] = useState(null); // this fileUrl is local url instead of ipfs url
+  const [isMinting, setIsMinting] = useState(false);
   const [formInput, updateFormInput] = useState({
     price: "",
     name: "",
@@ -94,39 +95,62 @@ export default function CreateItem({ isConnected }) {
   const toast = useToast();
 
   async function mint() {
+    setIsMinting(true);
+
     const url = await uploadMetaDataToIPFS();
 
     const { marketplace, boredPets } = await getContracts();
 
-    const txn = await boredPets.mint(url);
-    const rc = await txn.wait();
-    const NFTMinted = rc.events.find((event) => event.event === "NFTMinted");
-    console.log("NFTMinted", NFTMinted);
+    try {
+      const txn = await boredPets.mint(url);
+      const rc = await txn.wait();
+      const NFTMinted = rc.events.find((event) => event.event === "NFTMinted");
+      console.log("NFTMinted", NFTMinted);
 
-    const tokenId = NFTMinted.args[0].toNumber();
-    const txn2 = await marketplace.createNft(boredPets.address, tokenId);
-    const rc2 = await txn2.wait();
-    const NFTCreated = rc2.events.find((event) => event.event === "NFTCreated");
-    console.log("NFTCreated", NFTCreated);
+      const tokenId = NFTMinted.args[0].toNumber();
+      const txn2 = await marketplace.createNft(boredPets.address, tokenId);
+      const rc2 = await txn2.wait();
+      const NFTCreated = rc2.events.find(
+        (event) => event.event === "NFTCreated"
+      );
+      console.log("NFTCreated", NFTCreated);
 
-    toast({
-      title: "NFT Minted",
-      description: "NFT minted, you can go to My Asset to check.",
-      status: "success",
-      duration: 1000,
-      isClosable: true,
-      position: "top",
-      container: {
-        color: "pink.500",
-        rounded: "20px",
-      },
-    });
-    handleClearFile();
-    clearFormInput();
+      toast({
+        title: "NFT Minted",
+        description: "You can go to Mine Page to check.",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        container: {
+          color: "pink.500",
+          rounded: "20px",
+        },
+      });
+      handleClearFile();
+      clearFormInput();
+    } catch (e) {
+      console.log(e);
+
+      toast({
+        title: "Failed to Mint NFT",
+        description: REJECT_TXN_TEXT,
+        status: "error",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        container: {
+          color: "pink.500",
+          rounded: "20px",
+        },
+      });
+    }
+
+    setIsMinting(false);
   }
 
   const hasName = !!formInput.name;
-  const canMint = !!formInput.name && file;
+  const canMint = !!formInput.name && file && !isMinting;
 
   return !isConnected ? (
     <Text fontSize="30px" fontFamily="VT323">

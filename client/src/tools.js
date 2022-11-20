@@ -25,3 +25,6 @@ export const getContracts = async () => {
     return { marketplace, boredPets };
   }
 };
+
+export const REJECT_TXN_TEXT =
+  "You rejected the transaction in your cryptocurrency wallet.";

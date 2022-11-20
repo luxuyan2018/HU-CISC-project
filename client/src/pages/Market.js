@@ -1,14 +1,26 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Flex, Text, Image, Tooltip } from "@chakra-ui/react";
+
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  Image,
+  Tooltip,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { ethers } from "ethers";
 
-import { getContracts } from "../tools";
+import { getContracts, REJECT_TXN_TEXT } from "../tools";
 import { NavBarButton, tooltip } from "../styling";
 
 export default function Market({ isConnected, accounts }) {
   const [nfts, setNfts] = useState([]);
+  const [isBuying, setIsBuying] = useState(false);
   const [loadingState, setLoadingState] = useState("not-loaded");
+
+  const toast = useToast();
 
   useEffect(() => {
     loadNFTs();
@@ -47,13 +59,47 @@ export default function Market({ isConnected, accounts }) {
   }
 
   async function buyNFT(tokenId, price) {
+    setIsBuying(true);
+
     const { marketplace, boredPets } = await getContracts();
-    const txn = await marketplace.buyNft(boredPets.address, tokenId, {
-      value: price,
-    });
-    const rc = await txn.wait();
-    const NFTSold = rc.events.find((event) => event.event === "NFTSold");
-    console.log("NFTSold", NFTSold);
+
+    try {
+      const txn = await marketplace.buyNft(boredPets.address, tokenId, {
+        value: price,
+      });
+      const rc = await txn.wait();
+      const NFTSold = rc.events.find((event) => event.event === "NFTSold");
+      console.log("NFTSold", NFTSold);
+
+      toast({
+        title: "NFT Bought",
+        description: "You can go to Mine Page to check.",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        container: {
+          color: "pink.500",
+          rounded: "20px",
+        },
+      });
+    } catch (e) {
+      console.log(e);
+
+      toast({
+        title: "Failed to Buy NFT",
+        description: REJECT_TXN_TEXT,
+        status: "error",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        container: {
+          color: "pink.500",
+          rounded: "20px",
+        },
+      });
+    }
+    setIsBuying(false);
 
     await loadNFTs();
   }
@@ -105,7 +151,8 @@ export default function Market({ isConnected, accounts }) {
                     onClick={() => buyNFT(nft.tokenId, nft.price)}
                     disabled={
                       !accounts[0] ||
-                      nft.seller.toLowerCase() === accounts[0].toLowerCase()
+                      nft.seller.toLowerCase() === accounts[0].toLowerCase() ||
+                      isBuying
                     }
                   >
                     Buy
