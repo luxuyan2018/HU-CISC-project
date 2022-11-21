@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
 import { Marketplace, HappyCatsNFT } from "./ContractsAddress";
 
+import { Image, Modal, ModalContent, ModalCloseButton } from "@chakra-ui/react";
+
 export const getContracts = async () => {
   if (window.ethereum) {
     const networkId = await window.ethereum.request({
@@ -28,3 +30,24 @@ export const getContracts = async () => {
 
 export const REJECT_TXN_TEXT =
   "You rejected the transaction in your cryptocurrency wallet.";
+
+export const ImageModal = (isOpen, onClose, image) => {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      {/* adjust modal size */}
+      <ModalContent maxW="50rem">
+        <ModalCloseButton
+          size="md"
+          fontSize="30px"
+          borderRadius="10px"
+          position="absolute"
+          backgroundColor="#D53F8C"
+          fontFamily="VT323"
+        >
+          &#10007;
+        </ModalCloseButton>
+        <Image src={image} />
+      </ModalContent>
+    </Modal>
+  );
+};

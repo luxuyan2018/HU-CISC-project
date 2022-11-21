@@ -10,11 +10,12 @@ import {
   InputLeftAddon,
   Tooltip,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ethers } from "ethers";
 
-import { getContracts, REJECT_TXN_TEXT } from "../tools";
+import { getContracts, REJECT_TXN_TEXT, ImageModal } from "../tools";
 import { NavBarButton, tooltip } from "../styling";
 
 export default function MyAssets({ isConnected }) {
@@ -22,8 +23,10 @@ export default function MyAssets({ isConnected }) {
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [nftPrice, setNftPrice] = useState({});
   const [isListing, setIsListing] = useState(false);
+  const [currentNft, setCurrentNft] = useState();
 
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     loadNFTs();
@@ -117,6 +120,11 @@ export default function MyAssets({ isConnected }) {
     setIsListing(false);
   }
 
+  function handleShowFullImage(nft) {
+    setCurrentNft(nft);
+    onOpen();
+  }
+
   if (loadingState === "loaded" && !nfts.length) {
     return <h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>;
   } else {
@@ -126,6 +134,9 @@ export default function MyAssets({ isConnected }) {
       </Text>
     ) : (
       <Flex flexDirection="column">
+        {/* popup image */}
+        {ImageModal(isOpen, onClose, currentNft?.image)}
+
         <Text fontSize="30px" align="left" marginLeft="5%">
           My NFTs:
         </Text>
@@ -138,7 +149,11 @@ export default function MyAssets({ isConnected }) {
         >
           {nfts.map((nft, i) => (
             <Box marginBottom="30px" width="30%" align="center">
-              <Image src={nft.image} boxSize="400px" />
+              <Image
+                src={nft.image}
+                boxSize="400px"
+                onClick={() => handleShowFullImage(nft)}
+              />
               <Text fontSize="30px" fontFamily="VT323">
                 Name: {nft.name}
               </Text>

@@ -8,23 +8,31 @@ import {
   Image,
   Tooltip,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ethers } from "ethers";
 
-import { getContracts, REJECT_TXN_TEXT } from "../tools";
+import { getContracts, REJECT_TXN_TEXT, ImageModal } from "../tools";
 import { NavBarButton, tooltip } from "../styling";
 
 export default function Market({ isConnected, accounts }) {
   const [nfts, setNfts] = useState([]);
   const [isBuying, setIsBuying] = useState(false);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [currentNft, setCurrentNft] = useState();
 
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     loadNFTs();
   }, []);
+
+  function handleShowFullImage(nft) {
+    setCurrentNft(nft);
+    onOpen();
+  }
 
   async function loadNFTs() {
     const { marketplace, boredPets } = await getContracts();
@@ -116,6 +124,8 @@ export default function Market({ isConnected, accounts }) {
         <Text fontSize="30px" align="left" marginLeft="5%">
           NFTs for Sale:
         </Text>
+        {ImageModal(isOpen, onClose, currentNft?.image)}
+
         <Flex
           justify="space-evenly"
           align="center"
@@ -125,7 +135,11 @@ export default function Market({ isConnected, accounts }) {
         >
           {nfts.map((nft, i) => (
             <Box marginBottom="30px" width="30%" align="center">
-              <Image src={nft.image} boxSize="400px" />
+              <Image
+                src={nft.image}
+                boxSize="400px"
+                onClick={() => handleShowFullImage(nft)}
+              />
               <Text fontSize="30px" fontFamily="VT323">
                 Name: {nft.name}
               </Text>
